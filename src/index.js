@@ -5,32 +5,29 @@ import orderRouter from './order/order.router';
 import mongoose from 'mongoose';
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
 app.use('/user', userRouter);
 app.use('/product', productRouter);
 app.use('/order', orderRouter);
+app.get("/", function (req, res) {
+  res.send("Hola Mundo!");
+});
 
-// Conecta a la base de datos y espera a que se establezca la conexión
-const connectDB = async () => {
-  await mongoose.connect('mongodb+srv://cluster0.8cfhty8.mongodb.net/',{
+mongoose
+  .connect('mongodb+srv://cluster0.8cfhty8.mongodb.net/',{
     dbName: 'db_PF',
     user: 'test',
     pass:'testeo',
-  });
-  console.log('DB connected');
-};
+  })
+  .then(()=> console.log('database connected'))
+  .catch((error) => console.log(error))
 
-// Inicia el servidor después de la conexión a la base de datos
-const startServer = () => {
-  app.listen(port, () => {
-    console.log('Running on port: ' + port);
-  });
-};
-
-// Manejo de eventos de conexión y inicio del servidor
-connectDB().then(startServer);
-
-export default app;
+try {
+  app.listen(port);
+  console.log('server running on port ' + port);
+} catch (error) {
+  console.log(error);
+}
