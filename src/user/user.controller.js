@@ -1,6 +1,10 @@
 import userModel from "./user.model";
-import toObjectId from "mongoose";
 import jwt from 'jsonwebtoken';
+
+String.prototype.toObjectId = function() {
+  var ObjectId = (require('mongoose').Types.ObjectId);
+  return new ObjectId(this.toString());
+};
 
 export async function createUser(req, res) {
   try {
@@ -33,10 +37,9 @@ export async function login(req, res) {
 
 export async function readUserByID(req, res) {
   try {
-    const id = req.params.id;
-    const objectid = toObjectId("65652de7e5c6780c0d584095"); 
-    console.log(objectid);
-    const document = await userModel.findById(objectid);
+    
+    const id = (req.params.id).toString().toObjectId();
+    const document = await userModel.findById({ _id: id , active:true });
     document ? res.status(200).json(document) : res.sendStatus(404);
   } catch (error) {
     res.status(400).json(error.message);
@@ -45,7 +48,7 @@ export async function readUserByID(req, res) {
 
 export async function updateUser(req, res) {
   try {
-    const id = req.params._id;
+    const id = (req.params.id).toString().toObjectId();
     const document = await userModel.findByIdAndUpdate( { _id: id, active: true }, req.body, {
       runValidators: true,
       new: true,
@@ -58,7 +61,7 @@ export async function updateUser(req, res) {
 
 export async function deleteUser(req, res) {
   try {
-    const id = req.params._id;
+    const id = (req.params.id).toString().toObjectId();
     const document = await userModel.findByIdAndUpdate({ _id: id, active: true }, { active: false }, {
       runValidators: true,
 			new: true,
