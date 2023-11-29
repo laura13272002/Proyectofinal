@@ -1,5 +1,6 @@
 import userModel from "./user.model";
 import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
 String.prototype.toObjectId = function() {
   var ObjectId = (require('mongoose').Types.ObjectId);
@@ -22,10 +23,12 @@ export async function login(req, res) {
     const { email, password } = req.body;
     const result = await userModel.findOne({ email, password, active: true });
     
-    
-    if (result) {
-      console.log(result);
-      const token = jwt.sign(result, process.env.TOKEN_SECRET);
+    if (result) { 
+      const payload = result.toObject();
+      if (!process.env.SECRET_KEY) {
+        return res.status(500).json({ error: 'Secret key is missing or invalid.' });
+      }
+      const token = jwt.sign(payload, process.env.SECRET_KEY);
       return res.status(200).json({ token: token });
     }
     res.sendStatus(404);

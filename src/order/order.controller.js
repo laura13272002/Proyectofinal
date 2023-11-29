@@ -17,7 +17,7 @@ export async function createOrder(req, res) {
 }
 export async function readOrder(req, res) {
   try {
-    const id = req.params.id;
+    const id = (req.params.id).toString().toObjectId();
     const document = await orderModel.findOne({ _id: id, active: true });
     if (order.user.toString() !== req.user_id) {
       return res
@@ -52,7 +52,7 @@ export async function searchOrder(req, res) {
 
 export async function updateOrder(req, res) {
   try {
-    const id = req.params.id;
+    const id = (req.params.id).toString().toObjectId();
     const document = await orderModel.findOneAndUpdate(
       { user_id: id, active: true },
       req.body,

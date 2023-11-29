@@ -19,7 +19,7 @@ export async function createProduct(req, res) {
 
 export async function readProduct(req, res) {
   try {
-    const id = req.params._id;
+    const id = (req.params.id).toString().toObjectId();
     const document = await productModel.findOne({ _id: id, active: true });
     document ? res.status(200).json(document) : res.sendStatus(404);
   } catch (error) {
@@ -81,7 +81,7 @@ export async function readProducts(req,res) {
 
 export async function updateProduct(req, res) {
   try {
-    const id = req.params._id;
+    const id = (req.params.id).toString().toObjectId();
     const document = await productModel.findByIdAndUpdate({ _id: id, active: true }, req.body, {
       runValidators: true,
       new: true,
@@ -99,7 +99,7 @@ export async function updateProduct(req, res) {
 
 export async function deleteProduct(req, res) {
   try {
-    const id = req.params._id;
+    const id = (req.params.id).toString().toObjectId();
     if (product.user.toString() !== req.user_id) {
       return res.status(403).send({
         message: 'You do not have permission to delete this product.',

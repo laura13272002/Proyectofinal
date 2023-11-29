@@ -5,11 +5,13 @@ export default async function authenticate(req, res, next) {
   try {
     const authorization = req.headers.authorization;
     const token = authorization?.split(' ')[1];
+    console.log(token);
     const payload = jwt.verify(token, process.env.SECRET_KEY);
+    console.log(payload);
     const { _id } = payload;
+    
     const result = await userModel.findById(_id);
 
-    // if (result) return (req.user = result) && next();
     if (result) {
       req.user = result;
       return next();

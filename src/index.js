@@ -3,6 +3,7 @@ import userRouter from './user/user.router';
 import productRouter from './product/product.router';
 import orderRouter from './order/order.router';
 import mongoose from 'mongoose';
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
